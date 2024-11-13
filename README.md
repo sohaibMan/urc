@@ -275,9 +275,6 @@ Discuter à 2, c'est bien ; en groupe, c'est mieux !
 - Permettre l'envoi d'un message sur un salon
 - Afficher la liste des messages d'un salon
 - Gérer les notifications push à l'ensemble des membres d'un groupe
-- Ajouter un bouton pour créer un nouveau groupe
-- Super bonus : gérer des groupes privés ne pouvant être consultés que par les utilisateurs autorisés par le créateur du groupe.
-- Super bonus 2 : afficher le nombre de messages non lu au niveau de la liste des utilisateurs et des salons.
 
 <p>&nbsp;</p>
 
@@ -289,6 +286,20 @@ Et ça tombe bien, en plus d'une BDD et d'un cache, Vercel propose également du
 Votre dernière mission, si vous l'acceptez : ajouter la gestion des images aux conversations : 
 
 ![demo](doc/demo.gif)
+
+
+<p>&nbsp;</p>
+
+
+## Toujours plus 🚀
+
+Sky is the limit !
+
+- Afficher le nombre de messages non lu au niveau de la liste des utilisateurs et des salons
+- Mettre en place des fils de discussion (liste de messages associés à un message)
+- Ajouter des likes et/ou des emoji de réaction sur les messages
+- Permettre la création dynamique de nouveaux groupes de discussion
+- Gérer des groupes privés (visibles uniquement de certains utilisateurs)
 
 
 <p>&nbsp;</p>
