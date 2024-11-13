@@ -13,7 +13,7 @@ const Chat = () => {
     const [message_list, set_message_list] = useState<Message[]>([]);
     const [loading, setLoading] = useState(false);
     const {id} = useParams();
-    const receiver_id = (id == null || id == undefined ? 0 : +id) as number;
+    const receiver_id = (id == null || id == undefined ? 0 : id) as number;
     const [msgLoading, setMsgLoading] = useState<boolean>(false);
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
