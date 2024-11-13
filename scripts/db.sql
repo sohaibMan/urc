@@ -15,6 +15,13 @@ CREATE TABLE rooms (
    created_by INTEGER NOT NULL
 );
 
+CREATE TABLE messages (
+   message_id serial PRIMARY KEY,
+   emetteur_id int NOT NULL,
+   recepteur_id int NOT NULL,
+   contenu varchar(255) NOT NULL,
+   created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 insert into users (username, password, email, created_on, external_id) values ('test', 'gcrjEewWyAuYskG3dd6gFTqsC6/SKRsbTZ+g1XHDO10=', 'test@univ-brest.fr', now(), 'ac7a25a9-bcc5-4fba-8a3d-d42acda26949');
 
