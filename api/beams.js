@@ -1,9 +1,12 @@
 import {getConnecterUser, triggerNotConnected} from "../lib/session";
 
-const PushNotifications = require("@pusher/push-notifications-server");
+import PushNotifications from "@pusher/push-notifications-server";
 
+export const config = {
+    runtime: "edge",
+};
 
-export default async (req, res) => {
+export default async function handler(req, res) {
 
     const userIDInQueryParam = req.query["user_id"];
     const user = await getConnecterUser(req);
@@ -23,4 +26,4 @@ export default async (req, res) => {
     const beamsToken = beamsClient.generateToken(user.externalId);
     console.log(JSON.stringify(beamsToken));
     res.send(beamsToken);
-};
+}

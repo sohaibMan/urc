@@ -57,6 +57,7 @@ export function Login() {
         console.log(session);
         form.reset();
         setError(new CustomError(''));
+        window.Notification.requestPermission()
         navigate('/messages');
       },
       (loginError: CustomError) => {

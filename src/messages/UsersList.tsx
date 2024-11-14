@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from "react";
-import {Box, Heading, Spinner, Select, Text} from "@chakra-ui/react";
+import {Box, Heading, Spinner, Select} from "@chakra-ui/react";
 import {listUsers} from "./usersApi";
 import {RootState, UserPublic} from "../model/common";
 import {useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 
 const UserList = () => {
-    const {id_receiver} = useParams();
     const [users, setUsers] = useState<UserPublic[]>([]);
     const [loading, setLoading] = useState(true);
     const session = useSelector((state: RootState) => state.session.session);

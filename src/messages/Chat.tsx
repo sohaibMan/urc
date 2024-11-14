@@ -4,7 +4,6 @@ import {useNavigate, useParams} from 'react-router-dom';
 import {getMessages, sendMessage} from './messagesApi';
 import {useSelector} from 'react-redux';
 import {Message, RootState, Session} from '../model/common';
-import {color} from 'framer-motion';
 
 const Chat = () => {
     const session = useSelector((state: RootState) => state.session.session);
