@@ -12,7 +12,7 @@ const Chat = () => {
     const [message_list, set_message_list] = useState<Message[]>([]);
     const [loading, setLoading] = useState(false);
     const {id} = useParams();
-    const receiver_id = (id == null || id == undefined ? 0 : id) as number;
+    const receiver_id = (id == null || id == undefined ? 0 : +id) ;
     const [msgLoading, setMsgLoading] = useState<boolean>(false);
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +64,7 @@ const Chat = () => {
         try {
             if (!receiver_id) return;
             setMsgLoading(true);
-            const messagesData = await getMessages({sender_id: session.id!, receiver_id: receiver_id});
+            const messagesData = await getMessages({sender_id: session.id!, receiver_id: +receiver_id});
             set_message_list(messagesData);
         } catch (error) {
             console.error("Erreur lors de la récupération des utilisateurs:", error);
