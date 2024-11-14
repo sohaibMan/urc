@@ -12,7 +12,6 @@ const UserList = () => {
     const navigate = useNavigate();
     const {id} = useParams();
     const receiver_id = (id == null || id == undefined ? -1 : id) as number;
-    const [selectedUser, setSelectedUser] = useState<string | number>("");
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -40,11 +39,7 @@ const UserList = () => {
     }, []);
 
     const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedUser(event.target.value);
-        if (selectedUser !== "") {
-            // Handle the selected user, e.g., navigate to a specific user's messages
-            navigate(`/messages/user/${event.target.value}`);
-        }
+        event.target.value && navigate(`/messages/user/${event.target.value}`);
     };
 
     return (
@@ -70,7 +65,6 @@ const UserList = () => {
                         UTILISATEURS:
                     </Heading>
                     <Select
-                        value={selectedUser}
                         onChange={handleUserChange}
                         mb="4"
                         color="black"
