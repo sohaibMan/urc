@@ -43,7 +43,7 @@ const UserList = () => {
         setSelectedUser(event.target.value);
         if (selectedUser !== "") {
             // Handle the selected user, e.g., navigate to a specific user's messages
-            navigate(`/messages/user/${selectedUser}`);
+            navigate(`/messages/user/${event.target.value}`);
         }
     };
 
