@@ -2,9 +2,6 @@ import {getConnecterUser, triggerNotConnected} from "../lib/session";
 
 import PushNotifications from "@pusher/push-notifications-server";
 
-export const config = {
-    runtime: "edge",
-};
 
 export default async function handler(req, res) {
 
