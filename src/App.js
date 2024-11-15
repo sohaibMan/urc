@@ -41,7 +41,7 @@ function App() {
         return () => {
             beamsClient.stop().catch(console.error);
         };
-    },[]);
+    }, []);
 
 
     return (
