@@ -14,9 +14,9 @@ export default async function handler(req, res) {
         return;
     }
 
-    console.log("Using push instance : " + process.env.PUSHER_INSTANCE_ID);
+    console.log("Using push instance : " + process.env.REACT_APP_PUSHER_INSTANCE_ID);
     const beamsClient = new PushNotifications({
-        instanceId: process.env.PUSHER_INSTANCE_ID,
+        instanceId: process.env.REACT_APP_PUSHER_INSTANCE_ID,
         secretKey: process.env.PUSHER_SECRET_KEY,
     });
 

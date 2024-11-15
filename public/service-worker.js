@@ -3,6 +3,7 @@ if( 'function' === typeof importScripts) {
   /* eslint-disable no-undef */
   importScripts("https://js.pusher.com/beams/service-worker.js");
 }
+console.log('Service worker.js');
 
 PusherPushNotifications.onNotificationReceived = ({
   pushEvent,
