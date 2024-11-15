@@ -1,4 +1,4 @@
-import {db, sql} from "@vercel/postgres";
+import {db} from "@vercel/postgres";
 import {checkSession, unauthorizedResponse} from "../lib/session";
 import PushNotifications from "@pusher/push-notifications-server";
 
@@ -20,10 +20,14 @@ export default async function handler(request) {
             });
         }
 
-        const {rowCount} = await sql`
+
+        const client = await db.connect();
+
+
+        const {rowCount} = await client.query(`
             INSERT INTO messages (sender_id, receiver_id, message_text)
             VALUES (${sender_id}, ${receiver_id}, ${message_text})
-        `;
+        `);
 
         console.log(rowCount + " message inserted");
 
@@ -32,7 +36,6 @@ export default async function handler(request) {
             secretKey: process.env.PUSHER_SECRET_KEY,
         });
 
-        const client = await db.connect();
         const query = `SELECT external_id
                        FROM users
                        WHERE user_id = $1`;
