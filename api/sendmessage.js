@@ -57,6 +57,11 @@ export default async function handler(request) {
                 },
                 data: {},
             },
+        }).then((publishResponse) => {
+            console.log("Just published:", publishResponse.publishId);
+        }
+        ).catch((error) => {
+            console.log("Error:", error);
         });
 
 
