@@ -62,7 +62,7 @@ const UserList = () => {
                         color="#13262F"
                         borderBottom="1px solid teal"
                     >
-                        UTILISATEURS:
+                        Inbox
                     </Heading>
                     <Select
                         onChange={handleUserChange}
@@ -70,7 +70,7 @@ const UserList = () => {
                         color="black"
                     >
                         <option value="" disabled>
-                            Sélectionnez un utilisateur
+                            Sélectionnez un utilisateur/salon
                         </option>
                         {users.map((user) =>
                             user.user_id !== session.id ? (

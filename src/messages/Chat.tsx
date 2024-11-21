@@ -47,7 +47,6 @@ const Chat = () => {
             setLoading(true);
             const msg = message_text as string;
             set_message_text('');
-            await sendMessage({sender_id: session.id!, receiver_id: receiver_id!, img_url: '', message_text: msg});
             set_message_list([
                 ...message_list,
                 {
@@ -59,11 +58,14 @@ const Chat = () => {
                     timestamp: new Date().toLocaleTimeString(),
                 },
             ]);
+            await sendMessage({sender_id: session.id!, receiver_id: receiver_id!, img_url: '', message_text: msg});
             setLoading(false);
         }
     };
 
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        setLoading(true);
+
         const file = event.target.files?.[0];
         if (file) {
             const {url} = await put(`uploads/${file.name}`, file, {
@@ -71,8 +73,22 @@ const Chat = () => {
                 token: process.env.REACT_APP_BLOB_READ_WRITE_TOKEN
             },);
             console.log("File uploaded successfully:", url);
+            set_message_list([
+                ...message_list,
+                {
+                    id: Math.floor(Math.random() * 99999),
+                    sender_id: session.id!,
+                    receiver_id: receiver_id!,
+                    img_url: '',
+                    message_text: message_text,
+                    timestamp: new Date().toLocaleTimeString(),
+                },
+            ]);
             await sendMessage({sender_id: session.id!, receiver_id: receiver_id!, img_url: url, message_text: ''});
         }
+
+        setLoading(false);
+
     };
 
     const fetchMessages = async () => {
