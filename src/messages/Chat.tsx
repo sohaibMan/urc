@@ -4,6 +4,8 @@ import {useNavigate, useParams} from 'react-router-dom';
 import {getMessages, sendMessage} from './messagesApi';
 import {useSelector} from 'react-redux';
 import {Message, RootState, Session} from '../model/common';
+import {put} from "@vercel/blob";
+
 
 const Chat = () => {
     const session = useSelector((state: RootState) => state.session.session);
@@ -12,7 +14,7 @@ const Chat = () => {
     const [message_list, set_message_list] = useState<Message[]>([]);
     const [loading, setLoading] = useState(false);
     const {id} = useParams();
-    const receiver_id = (id == null || id == undefined ? 0 : +id) ;
+    const receiver_id = (id == null || id == undefined ? 0 : +id);
     const [msgLoading, setMsgLoading] = useState<boolean>(false);
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
@@ -45,18 +47,31 @@ const Chat = () => {
             setLoading(true);
             const msg = message_text as string;
             set_message_text('');
-            await sendMessage({sender_id: session.id!, receiver_id: receiver_id!, message_text: msg});
+            await sendMessage({sender_id: session.id!, receiver_id: receiver_id!, img_url: '', message_text: msg});
             set_message_list([
                 ...message_list,
                 {
                     id: Math.floor(Math.random() * 99999),
                     sender_id: session.id!,
                     receiver_id: receiver_id!,
+                    img_url: '',
                     message_text: message_text,
                     timestamp: new Date().toLocaleTimeString(),
                 },
             ]);
             setLoading(false);
+        }
+    };
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const {url} = await put(`uploads/${file.name}`, file, {
+                access: 'public',
+                token: process.env.REACT_APP_BLOB_READ_WRITE_TOKEN
+            },);
+            console.log("File uploaded successfully:", url);
+            await sendMessage({sender_id: session.id!, receiver_id: receiver_id!, img_url: url, message_text: ''});
         }
     };
 
@@ -106,9 +121,16 @@ const Chat = () => {
                                 maxWidth="50%"
                                 backgroundColor={message.sender_id === session.id ? '#fcefb4' : 'white'}
                             >
-                                <Text fontSize="16" fontWeight="bold" color="black">
-                                    {message.message_text}
-                                </Text>
+                                {message.message_text && (
+                                    <Text fontSize="16" fontWeight="bold" color="black">
+                                        {message.message_text}
+                                    </Text>
+                                )}
+                                {message.img_url && (
+                                    <Box>
+                                        <img src={message.img_url} alt="uploaded" style={{maxWidth: '100%'}}/>
+                                    </Box>
+                                )}
                                 <Box fontSize="11" color="gray.400">
                                     {message.timestamp}
                                 </Box>
@@ -125,6 +147,20 @@ const Chat = () => {
                             placeholder="Saisissez votre message..."
                             value={message_text}
                             onChange={(e) => set_message_text(e.target.value)}
+                            borderColor="gray.300"
+                            _hover={{borderColor: 'gray.500'}}
+                            _focus={{borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500'}}
+                            autoComplete={'off'}
+                        />
+                    </FormControl>
+                    <FormControl mb={4}>
+                        <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileUpload}
+                            borderColor="gray.300"
+                            _hover={{borderColor: 'gray.500'}}
+                            _focus={{borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500'}}
                         />
                     </FormControl>
                     <Button

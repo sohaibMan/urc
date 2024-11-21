@@ -26,6 +26,7 @@ export default async function handler(request) {
     sender_id,
     receiver_id,
     message_text,
+    img_url,
     TO_CHAR(timestamp, 'DD/MM/YYYY HH24:MI') as timestamp
     FROM
         messages

@@ -22,6 +22,7 @@ export interface Message{
     sender_id: number;
     receiver_id: number;
     message_text?: string;
+    img_url?: string;
     timestamp?: string;
 }
 

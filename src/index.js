@@ -7,7 +7,7 @@ import {ChakraProvider} from '@chakra-ui/react';
 import {Provider} from 'react-redux';
 import {mainStore} from './redux';
 
-
+localStorage.setItem('chakra-ui-color-mode', 'light');
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>

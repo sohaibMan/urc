@@ -17,9 +17,9 @@ export default async function handler(req, res) {
         }
 
         // Step 2: Parse and validate request body
-        const { sender_id, receiver_id, message_text } = req.body;
+        const { sender_id, receiver_id, message_text,img_url } = req.body;
 
-        if (!sender_id || !receiver_id || !message_text) {
+        if (!sender_id || !receiver_id || (!message_text && !img_url)) {
             return res
                 .status(400)
                 .json({ error: "Missing required fields" });
@@ -33,10 +33,10 @@ export default async function handler(req, res) {
             console.time("Database Insertion");
             const { rows, rowCount } = await client.query(
                 `
-                INSERT INTO messages (sender_id, receiver_id, message_text)
-                VALUES ($1, $2, $3) RETURNING *
+                INSERT INTO messages (sender_id, receiver_id, message_text,img_url)
+                VALUES ($1, $2, $3,$4) RETURNING *
             `,
-                [sender_id, receiver_id, message_text]
+                [sender_id, receiver_id, message_text,img_url]
             );
             console.timeEnd("Database Insertion");
 
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
             console.time("Fetch External ID");
             const { rows: users } = await db.query(
                 `SELECT external_id FROM users WHERE user_id = $1`,
-                [sender_id]
+                [receiver_id]
             );
             console.timeEnd("Fetch External ID");
 

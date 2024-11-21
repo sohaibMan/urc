@@ -26,7 +26,7 @@ export default async function handler(request) {
             await client.sql`update users set last_login = now() where user_id = ${rows[0].user_id}`;
             const token = crypto.randomUUID().toString();
             const user = {id: rows[0].user_id, username: rows[0].username, email: rows[0].email, externalId: rows[0].external_id}
-            await redis.set(token, user, { ex: 3600 });
+            await redis.set(token, user, { ex: 3600 *24});
             const userInfo = {};
             userInfo[user.id] = user;
             await redis.hset("users", userInfo);
