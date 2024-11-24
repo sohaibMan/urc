@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import reportWebVitals from './reportWebVitals';
+import reportWebVitals from './reportWebVitals.js';
 import {ChakraProvider} from '@chakra-ui/react';
 import {Provider} from 'react-redux';
 import {mainStore} from './redux/index.js';
