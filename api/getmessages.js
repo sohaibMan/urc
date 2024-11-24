@@ -32,7 +32,7 @@ export default async function handler(request) {
                 FROM
                     room_messages
                 WHERE
-                    room_id = ${receiver_id}rhhithg
+                    room_id = ${receiver_id}
                 
                 ORDER BY
                     timestamp ASC;
