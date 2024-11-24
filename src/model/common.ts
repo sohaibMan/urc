@@ -11,13 +11,21 @@ export interface User {
     last_login?: string;
     external_id?: string;
 }
-export interface UserPublic{
-		user_id: number;
-		username: string;
-		last_login?: string;
+
+export interface UserPublic {
+    user_id: number;
+    username: string;
+    last_login?: string;
 }
 
-export interface Message{
+export interface Room {
+    room_id: number;
+    name: string;
+    created_on: string; // ISO 8601 format for timestamps
+    created_by: number;
+}
+
+export interface Message {
     id?: number;
     sender_id: number;
     receiver_id: number;
@@ -55,10 +63,10 @@ export interface RootState {
     session: SessionState;
 }
 
-export interface UsersState{
+export interface UsersState {
     users: UserPublic[]
 }
 
-export interface RootUsersState{
+export interface RootUsersState {
     users: UsersState
 }

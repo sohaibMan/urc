@@ -1,6 +1,6 @@
 import {Message} from "../model/common";
 
-export async function sendMessage(message: Message): Promise<void> {
+export async function sendMessage(message: Message,is_room:boolean): Promise<void> {
     try {
         const response = await fetch("/api/sendmessage", {
             method: "POST",
@@ -12,7 +12,8 @@ export async function sendMessage(message: Message): Promise<void> {
                 sender_id: message.sender_id,
                 receiver_id: message.receiver_id,
                 img_url: message.img_url,
-                message_text: message.message_text
+                message_text: message.message_text,
+                is_room:is_room
             }),
         });
 
@@ -37,7 +38,7 @@ export async function sendMessage(message: Message): Promise<void> {
 }
 
 
-export async function getMessages(message: Message): Promise<Message[]> {
+export async function getMessages(message: Message,is_room:boolean): Promise<Message[]> {
     try {
         const response = await fetch("/api/getmessages", {
             method: "POST",
@@ -45,7 +46,7 @@ export async function getMessages(message: Message): Promise<Message[]> {
                 "Content-Type": "application/json",
                 "Authentication": "Bearer " + sessionStorage.getItem("token"),
             },
-            body: JSON.stringify({sender_id: message.sender_id, receiver_id: message.receiver_id}),
+            body: JSON.stringify({sender_id: message.sender_id, receiver_id: message.receiver_id,is_room:is_room}),
         });
 
         if (response.ok) {

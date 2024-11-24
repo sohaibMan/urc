@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {Box, Heading, Spinner, Select} from "@chakra-ui/react";
+import {Box, Heading, Spinner, Avatar, Text, VStack, HStack, Divider} from "@chakra-ui/react";
 import {listUsers} from "./usersApi";
 import {RootState, UserPublic} from "../model/common";
 import {useSelector} from "react-redux";
@@ -11,19 +11,25 @@ const UserList = () => {
     const session = useSelector((state: RootState) => state.session.session);
     const navigate = useNavigate();
     const {id} = useParams();
-    const receiver_id = (id == null || id == undefined ? -1 : id) as number;
+    const receiver_id = id ? parseInt(id) : null;
+
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const usersData = await listUsers();
                 setUsers(usersData);
-                const isReceiverInUsers = usersData.some(
-                    (user) => user.user_id === receiver_id
-                );
 
-                if (!isReceiverInUsers) {
-                    navigate("/messages");
+                if (receiver_id === null && usersData.length > 0 && window.location.href.includes("user")) {
+                    navigate(`/messages/user/${usersData[0].user_id}`);
+                } else {
+                    const isReceiverInUsers = usersData.some(
+                        (user) => user.user_id === receiver_id
+                    );
+
+                    if (!isReceiverInUsers) {
+                        navigate("/messages");
+                    }
                 }
             } catch (error) {
                 console.error(
@@ -36,14 +42,14 @@ const UserList = () => {
         };
 
         fetchUsers();
-    }, []);
+    }, [receiver_id, navigate]);
 
-    const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        event.target.value && navigate(`/messages/user/${event.target.value}`);
+    const handleUserClick = (user_id: number) => {
+        navigate(`/messages/user/${user_id}`);
     };
 
     return (
-        <Box width={['80%', '70%']}>
+        <Box width={['80%', '70%']} p={4} borderRadius="md" borderWidth={"thin"} bg="white">
             {loading ? (
                 <Box
                     display="flex"
@@ -54,33 +60,38 @@ const UserList = () => {
                     <Spinner size="xl"/>
                 </Box>
             ) : (
-                <Box>
+                <VStack spacing={4} align="stretch">
                     <Heading
                         fontSize="2xl"
                         mb="4"
-                        padding="4"
                         color="#13262F"
                         borderBottom="1px solid teal"
                     >
-                        Inbox
+                        Utilisateurs
                     </Heading>
-                    <Select
-                        onChange={handleUserChange}
-                        mb="4"
-                        color="black"
-                    >
-                        <option value="" disabled>
-                            Sélectionnez un utilisateur/salon
-                        </option>
-                        {users.map((user) =>
-                            user.user_id !== session.id ? (
-                                <option key={user.user_id} value={user.user_id}>
-                                    {user.username}
-                                </option>
-                            ) : null
-                        )}
-                    </Select>
-                </Box>
+                    {users.map((user) =>
+                        user.user_id !== session.id ? (
+                            <Box
+                                key={user.user_id}
+                                p={3}
+                                borderRadius="md"
+                                _hover={{bg: "gray.100", cursor: "pointer"}}
+                                onClick={() => handleUserClick(user.user_id)}
+                            >
+                                <HStack spacing={4}>
+                                    <Avatar name={user.username}/>
+                                    <VStack align="start" spacing={0}>
+                                        <Text fontWeight="bold">{user.username}</Text>
+                                        <Text fontSize="sm" color="gray.500">
+                                            {user.username}
+                                        </Text>
+                                    </VStack>
+                                </HStack>
+                                <Divider mt={2}/>
+                            </Box>
+                        ) : null
+                    )}
+                </VStack>
             )}
         </Box>
     );

@@ -19,12 +19,22 @@ CREATE TABLE rooms
 
 CREATE TABLE messages
 (
-    id   serial PRIMARY KEY,
-    sender_id  int          NOT NULL,
-    receiver_id int          NOT NULL,
-    message_text      varchar(255) NOT NULL,
+    id           serial PRIMARY KEY,
+    sender_id    int          NOT NULL,
+    receiver_id  int          NOT NULL,
+    message_text varchar(255) NOT NULL,
     img_url      varchar(255),
-    timestamp   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    timestamp    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE room_messages
+(
+    id           serial PRIMARY KEY,
+    sender_id    int          NOT NULL,
+    room_id  int          NOT NULL,
+    message_text varchar(255) NOT NULL,
+    img_url      varchar(255),
+    timestamp    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 insert into users (username, password, email, created_on, external_id)

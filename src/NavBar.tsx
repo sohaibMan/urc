@@ -1,9 +1,10 @@
 import React from 'react';
-import { Flex, Box, Link, Text } from '@chakra-ui/react';
+import { Flex, Box, Link, Text, Avatar, IconButton } from '@chakra-ui/react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux";
 import { CLEAR_SESSION } from './redux';
 import { RootState } from './model/common';
+import { FiLogOut } from 'react-icons/fi';
 
 interface NavBarProps {
   isAuthenticated: boolean;
@@ -23,14 +24,25 @@ const NavBar: React.FC<NavBarProps> = () => {
 
   return (
     <Flex p={4} bg="#13262F" color="#E9E6FF" align="center" justify="space-between">
-      <Box>
-        <Text fontSize="xl">UBO Relay Chat</Text>
+      <Box display="flex" alignItems="center">
+        <Avatar size="sm" name="UBO Relay Chat" src="/path/to/logo.png" mr={2} />
+        <Text fontSize="xl" fontWeight="bold">UBO Relay Chat</Text>
       </Box>
-      <Box>
+      <Box display="flex" alignItems="center">
+        <Link as={RouterLink} to="/messages" color="white" mr={4}>
+          Messages
+        </Link>
+        <Link as={RouterLink} to="/profile" color="white" mr={4}>
+          Profile
+        </Link>
         {session.token ? (
-          <Link onClick={onLogout} color="white" mr={4}>
-            Déconnexion
-          </Link>
+          <IconButton
+            icon={<FiLogOut />}
+            variant="outline"
+            color="white"
+            onClick={onLogout}
+            aria-label="Logout"
+          />
         ) : (
           <Link as={RouterLink} to="/login" color="white">
             Connexion

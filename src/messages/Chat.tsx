@@ -5,17 +5,16 @@ import {getMessages, sendMessage} from './messagesApi';
 import {useSelector} from 'react-redux';
 import {Message, RootState, Session} from '../model/common';
 import {put} from "@vercel/blob";
+import {useDropzone} from 'react-dropzone';
 
-
-const Chat = () => {
+const Chat = ({isRoom}: { isRoom: boolean }) => {
     const session = useSelector((state: RootState) => state.session.session);
     const navigate = useNavigate();
     const [message_text, set_message_text] = useState('');
     const [message_list, set_message_list] = useState<Message[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loadingMessages, setLoadingMessages] = useState(true);
     const {id} = useParams();
-    const receiver_id = (id == null || id == undefined ? 0 : +id);
-    const [msgLoading, setMsgLoading] = useState<boolean>(false);
+    const receiver_id = id ? +id : 0;
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -29,7 +28,7 @@ const Chat = () => {
     };
 
     const verifyParams = (session: Session): boolean => {
-        if (session.token != null && session.id != null && id != null) {
+        if (session.token && session.id && id) {
             return true;
         } else {
             navigate('/login');
@@ -39,39 +38,37 @@ const Chat = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (message_text.trim().length === 0) {
+        if (message_text.trim().length === 0 || !verifyParams(session)) {
             return;
         }
-        verifyParams(session);
-        if (verifyParams(session)) {
-            setLoading(true);
-            const msg = message_text as string;
-            set_message_text('');
-            set_message_list([
-                ...message_list,
-                {
-                    id: Math.floor(Math.random() * 99999),
-                    sender_id: session.id!,
-                    receiver_id: receiver_id!,
-                    img_url: '',
-                    message_text: message_text,
-                    timestamp: new Date().toLocaleTimeString(),
-                },
-            ]);
-            await sendMessage({sender_id: session.id!, receiver_id: receiver_id!, img_url: '', message_text: msg});
-            setLoading(false);
-        }
+        const msg = message_text;
+        set_message_text('');
+        set_message_list([
+            ...message_list,
+            {
+                id: Math.floor(Math.random() * 99999),
+                sender_id: session.id!,
+                receiver_id: receiver_id!,
+                img_url: '',
+                message_text: msg,
+                timestamp: new Date().toLocaleTimeString(),
+            },
+        ]);
+        await sendMessage({
+            sender_id: session.id!,
+            receiver_id: receiver_id!,
+            img_url: '',
+            message_text: msg,
+        }, isRoom);
     };
 
-    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLoading(true);
-
-        const file = event.target.files?.[0];
+    const onDrop = async (acceptedFiles: File[]) => {
+        const file = acceptedFiles[0];
         if (file) {
             const {url} = await put(`uploads/${file.name}`, file, {
                 access: 'public',
                 token: process.env.REACT_APP_BLOB_READ_WRITE_TOKEN
-            },);
+            });
             console.log("File uploaded successfully:", url);
             set_message_list([
                 ...message_list,
@@ -79,28 +76,32 @@ const Chat = () => {
                     id: Math.floor(Math.random() * 99999),
                     sender_id: session.id!,
                     receiver_id: receiver_id!,
-                    img_url: '',
-                    message_text: message_text,
+                    img_url: url,
+                    message_text: '',
                     timestamp: new Date().toLocaleTimeString(),
                 },
             ]);
-            await sendMessage({sender_id: session.id!, receiver_id: receiver_id!, img_url: url, message_text: ''});
+            await sendMessage({
+                sender_id: session.id!,
+                receiver_id: receiver_id!,
+                img_url: url,
+                message_text: ''
+            }, isRoom);
         }
-
-        setLoading(false);
-
     };
+
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
 
     const fetchMessages = async () => {
         try {
             if (!receiver_id) return;
-            setMsgLoading(true);
-            const messagesData = await getMessages({sender_id: session.id!, receiver_id: +receiver_id});
+            setLoadingMessages(true);
+            const messagesData = await getMessages({sender_id: session.id!, receiver_id: receiver_id}, isRoom);
             set_message_list(messagesData);
         } catch (error) {
-            console.error("Erreur lors de la récupération des utilisateurs:", error);
+            console.error("Error fetching messages:", error);
         } finally {
-            setMsgLoading(false);
+            setLoadingMessages(false);
         }
     };
 
@@ -121,8 +122,8 @@ const Chat = () => {
                 height="60vh"
                 overflowY="auto"
             >
-                {msgLoading ? (
-                    <Box textAlign="center" mb={40}>
+                {loadingMessages ? (
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100%">
                         <Spinner size="xl"/>
                     </Box>
                 ) : (
@@ -159,6 +160,7 @@ const Chat = () => {
                 <form onSubmit={handleSubmit}>
                     <FormControl mb={4}>
                         <Input
+                            disabled={loadingMessages}
                             name="message_text"
                             placeholder="Saisissez votre message..."
                             value={message_text}
@@ -169,24 +171,31 @@ const Chat = () => {
                             autoComplete={'off'}
                         />
                     </FormControl>
-                    <FormControl mb={4}>
-                        <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileUpload}
-                            borderColor="gray.300"
-                            _hover={{borderColor: 'gray.500'}}
-                            _focus={{borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500'}}
-                        />
-                    </FormControl>
+                    {!loadingMessages && <Box
+                        {...getRootProps()}
+                        border="2px dashed gray"
+                        borderRadius="md"
+                        p={4}
+                        my={2}
+                        textAlign="center"
+                        _hover={{borderColor: 'gray.500'}}
+                        _focus={{borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500'}}
+                    >
+                        <input {...getInputProps()} />
+                        {isDragActive ? (
+                            <Text>Déposez les fichiers ici...</Text>
+                        ) : (
+                            <Text>Téléchargez vos photos ici</Text>
+                        )}
+                    </Box>}
                     <Button
+                        disabled={loadingMessages}
                         type="submit"
                         width="100%"
-                        bg="#13262F"  // Couleur de fond
-                        color="white"  // Couleur du texte
-                        disabled={loading}
+                        bg="#13262F"
+                        color="white"
                     >
-                        {loading ? <Spinner size="sm"/> : 'Envoyer'}
+                        Envoyer
                     </Button>
                 </form>
             </Box>

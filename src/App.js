@@ -52,6 +52,7 @@ function App() {
           <Route path='/signup'  element={session.token ? <Navigate to="/messages" /> : <><NavBar/><Signup/></>}/>
           <Route path='/messages' element={session.token ? <><NavBar /><MessagesMenu /></> : <Navigate to="/login" />}/>
           <Route path="/messages/user/:id" element={session.token ? <><NavBar /><MessagesMenu /></> : <Navigate to="/login" />}/>
+          <Route path="/messages/room/:id" element={session.token ? <><NavBar /><MessagesMenu isRoom={true}/></> : <Navigate to="/login" />}/>
         </Routes>
       </Router>
   );
