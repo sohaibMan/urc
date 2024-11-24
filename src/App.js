@@ -1,12 +1,12 @@
 import './App.css';
-import {Login} from "./user/Login";
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Signup from './user/Signup';
-import MessagesMenu from './messages/MessagesMenu';
-import NavBar from './NavBar';
 import { useSelector } from 'react-redux';
-import {useEffect} from "react";
 import {Client, TokenProvider} from "@pusher/push-notifications-web";
+import {useEffect} from "react";
+import {Login} from "./user/Login.tsx";
+import Signup from './user/Signup.tsx';
+import MessagesMenu from './messages/MessagesMenu.tsx';
+import NavBar from './NavBar.tsx';
 
 function App() {
   const session = useSelector((state) => state.session.session);
