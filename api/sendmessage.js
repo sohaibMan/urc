@@ -1,5 +1,5 @@
 import {db} from "@vercel/postgres";
-import {checkSession} from "../lib/session";
+import {checkSession} from "../lib/session.js";
 import PushNotifications from "@pusher/push-notifications-server";
 
 export default async function handler(req, res) {

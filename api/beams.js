@@ -1,4 +1,4 @@
-import {getConnecterUser, triggerNotConnected} from "../lib/session";
+import {getConnecterUser, triggerNotConnected} from "../lib/session.js";
 
 import PushNotifications from "@pusher/push-notifications-server";
 

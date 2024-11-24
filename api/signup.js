@@ -1,5 +1,5 @@
 import { db } from '@vercel/postgres';
-import { arrayBufferToBase64, stringToArrayBuffer } from '../lib/base64';
+import { arrayBufferToBase64, stringToArrayBuffer } from '../lib/base64.js';
 
 export const config = {
   runtime: 'edge',
@@ -15,7 +15,7 @@ export default async function handler(request) {
 
     // Check if the user already exists
     const client = await db.connect();
-    const {rowCount, rows} = await client.sql`SELECT * FROM users WHERE username = ${username} OR email = ${email}`;
+    const {rowCount} = await client.sql`SELECT * FROM users WHERE username = ${username} OR email = ${email}`;
     // const userCheckResult = await userCheckQuery.fetch();
 
     if (rowCount > 0) {

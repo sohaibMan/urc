@@ -1,5 +1,5 @@
 import { sql } from "@vercel/postgres";
-import {checkSession, unauthorizedResponse} from "../lib/session";
+import {checkSession, unauthorizedResponse} from "../lib/session.js";
 
 export const config = {
     runtime: 'edge',
@@ -35,4 +35,4 @@ export default async function handler(request) {
             headers: {'content-type': 'application/json'},
         });
     }
-};
+}
