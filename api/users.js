@@ -1,5 +1,5 @@
 import { sql } from "@vercel/postgres";
-import {checkSession, unauthorizedResponse} from "../lib/session.js";
+import {checkSession, getConnecterUser, unauthorizedResponse} from "../lib/session.js";
 
 export const config = {
     runtime: 'edge',
@@ -8,14 +8,20 @@ export const config = {
 export default async function handler(request) {
     try {
 
-        const connected = await checkSession(request);
-        if (!connected) {
+        const user = await getConnecterUser(request);
+        if (!user) {
             console.log("Not connected");
             return unauthorizedResponse();
         }
+        const currentUserUd = user.id;
+        console.log("Connected as " + currentUserUd);
 
-        const {rowCount, rows} = await sql`select user_id, username, TO_CHAR(last_login, 'DD/MM/YYYY HH24:MI') as last_login from users order by last_login desc`;
-        console.log("Got " + rowCount + " users");
+        const { rowCount, rows } = await sql`
+            select user_id, username, TO_CHAR(last_login, 'DD/MM/YYYY HH24:MI') as last_login
+            from users
+            where user_id != ${currentUserUd}
+            order by last_login desc
+        `;        console.log("Got " + rowCount + " users");
         if (rowCount === 0) {
             /* Vercel bug doesn't allow 204 response status */
             return new Response("[]", {

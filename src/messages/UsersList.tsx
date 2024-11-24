@@ -22,14 +22,6 @@ const UserList = () => {
 
                 if (receiver_id === null && usersData.length > 0 && window.location.href.includes("user")) {
                     navigate(`/messages/user/${usersData[0].user_id}`);
-                } else {
-                    const isReceiverInUsers = usersData.some(
-                        (user) => user.user_id === receiver_id
-                    );
-
-                    if (!isReceiverInUsers) {
-                        navigate("/messages");
-                    }
                 }
             } catch (error) {
                 console.error(

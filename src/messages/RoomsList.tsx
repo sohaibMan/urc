@@ -21,14 +21,6 @@ const RoomsList = () => {
 
                 if (receiver_id === null && roomsData.length > 0 && window.location.href.includes("room")) {
                     navigate(`/messages/room/${roomsData[0].room_id}`);
-                } else {
-                    const isReceiverInRooms = roomsData.some(
-                        (room) => room.room_id === receiver_id
-                    );
-
-                    if (!isReceiverInRooms) {
-                        navigate("/messages");
-                    }
                 }
             } catch (error) {
                 console.error(
